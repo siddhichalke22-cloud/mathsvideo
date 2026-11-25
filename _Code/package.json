@@ -1,0 +1,15 @@
+{
+  "name": "m3-gaussian-elimination",
+  "version": "1.0.0",
+  "description": "Animation video for Linear Algebra M3 internal assessment",
+  "main": "render_video.js",
+  "scripts": {
+    "render": "node render_video.js"
+  },
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "canvas": "^2.11.2"
+  }
+}

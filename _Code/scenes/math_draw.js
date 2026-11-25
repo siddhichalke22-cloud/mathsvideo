@@ -1,20 +1,23 @@
 // Shared 1920x1080 mathematical graphics & animation primitives
 
 export const THEME = {
-  bg0: '#060a14',
-  bg1: '#0d1526',
+  // Dark navy‑blue background palette (professional university aesthetic)
+  bg0: '#0a0f20', // deep navy
+  bg1: '#0d1526', // slightly lighter for gradient
   panel: 'rgba(15, 23, 42, 0.90)',
   panelLight: 'rgba(30, 41, 59, 0.85)',
   border: '#334155',
   text: '#f8fafc',
   textDim: '#94a3b8',
-  cyan: '#38bdf8',
+  // Electric cyan / blue highlights for premium feel
+  cyan: '#00e5ff',
   amber: '#fbbf24',
   emerald: '#34d399',
   coral: '#fb7185',
   violet: '#a78bfa',
   blue: '#60a5fa',
 };
+
 
 export const FONT_SANS = '"SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
 export const FONT_MONO = '"SF Mono", Menlo, Monaco, Consolas, monospace';
