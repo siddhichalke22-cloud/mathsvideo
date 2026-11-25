@@ -8,6 +8,7 @@
   },
   "author": "Your Name <your.email@example.com>",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
     "canvas": "^2.11.2"
   }
