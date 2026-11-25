@@ -1,32 +1,24 @@
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 const outPdf = path.join(rootDir, 'GaussianElimination_Storyboard.pdf');
+const cfgPath = path.join(__dirname, 'student_config.json');
+const srcHtmlPath = path.join(__dirname, 'storyboard.html');
+const buildDir = path.join(__dirname, 'build');
+fs.mkdirSync(buildDir, { recursive: true });
+const renderedHtmlPath = path.join(buildDir, 'storyboard_rendered.html');
 
-// Serve _Code briefly over localhost so storyboard.html can fetch student_config.json cleanly
-const server = http.createServer((req, res) => {
-  const cleanUrl = (req.url || '/').split('?')[0];
-  const relPath = cleanUrl === '/' ? 'storyboard.html' : cleanUrl.replace(/^\/+/, '');
-  const filePath = path.join(__dirname, relPath);
-  if (!filePath.startsWith(__dirname) || !fs.existsSync(filePath)) {
-    res.writeHead(404);
-    res.end('Not found');
-    return;
-  }
-  const ext = path.extname(filePath);
-  const types = { '.html': 'text/html', '.json': 'application/json', '.js': 'application/javascript' };
-  res.writeHead(200, { 'Content-Type': types[ext] || 'text/plain' });
-  fs.createReadStream(filePath).pipe(res);
-});
-
-await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-const { port } = server.address();
-const url = `http://127.0.0.1:${port}/storyboard.html`;
+const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+let html = fs.readFileSync(srcHtmlPath, 'utf8');
+html = html
+  .replace('<span id="studentName">Student Name</span>', cfg.studentName)
+  .replace('<span id="studentId">Student ID</span>', cfg.studentId)
+  .replace('M3_AnimationVideo_GaussianElimination_&lt;StudentID&gt;', cfg.repositoryName);
+fs.writeFileSync(renderedHtmlPath, html, 'utf8');
 
 const chromeBin = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const profileDir = '/tmp/chrome_storyboard_prof';
@@ -40,13 +32,11 @@ const result = spawnSync(
     `--user-data-dir=${profileDir}`,
     '--no-pdf-header-footer',
     `--print-to-pdf=${outPdf}`,
-    '--virtual-time-budget=2000',
-    url,
+    `file://${renderedHtmlPath}`,
   ],
   { stdio: 'pipe' }
 );
 
-server.close();
 fs.rmSync(profileDir, { recursive: true, force: true });
 
 if (result.status !== 0 || !fs.existsSync(outPdf)) {
