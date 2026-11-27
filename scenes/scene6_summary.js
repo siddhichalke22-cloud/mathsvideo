@@ -79,28 +79,25 @@ export function renderScene6(ctx, t, timeline, studentCfg) {
   ctx.fillStyle = THEME.cyan;
   ctx.font = `800 34px ${FONT_SANS}`;
   ctx.textAlign = 'center';
-  ctx.fillText('Credits & Verification', 1475, 205);
+  ctx.fillText('Credits', 1475, 225);
 
   const info = [
     ['Topic', studentCfg.title],
     ['Course', studentCfg.course],
     ['Presented By', studentCfg.studentName],
     ['Student ID', studentCfg.studentId],
-    ['Narration', `macOS TTS (${studentCfg.voice})`],
-    ['Audio', 'Original Procedural Ambient Pad'],
-    ['Verification', 'SymPy Exact Rational Check ✓'],
   ];
 
   info.forEach(([k, v], i) => {
-    const yy = 285 + i * 76;
+    const yy = 310 + i * 115;
     ctx.fillStyle = THEME.textDim;
     ctx.font = `700 18px ${FONT_MONO}`;
     ctx.textAlign = 'left';
     ctx.fillText(k.toUpperCase(), 1180, yy);
 
     ctx.fillStyle = THEME.text;
-    ctx.font = `600 22px ${FONT_SANS}`;
-    ctx.fillText(String(v), 1180, yy + 28);
+    ctx.font = `600 24px ${FONT_SANS}`;
+    ctx.fillText(String(v), 1180, yy + 32);
   });
   ctx.restore();
 }
