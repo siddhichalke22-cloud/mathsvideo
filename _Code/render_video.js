@@ -125,8 +125,18 @@ const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
       sceneFuncs[curScene.id](ctx, t, timeline, studentCfg);
 
       const blob = await toPngBlob();
-      const resp = await fetch('/frame?i=' + i, { method: 'POST', body: blob });
-      if (!resp.ok) throw new Error('Frame upload failed at ' + i);
+      const ab = await blob.arrayBuffer();
+      let sent = false;
+      for (let attempt = 0; attempt < 10; attempt++) {
+        try {
+          const resp = await fetch('/frame?i=' + i, { method: 'POST', body: ab });
+          if (resp.ok) { sent = true; break; }
+        } catch (e) {
+          if (attempt === 0) status('Retry at frame ' + i + ': ' + e.message);
+          await new Promise(r => setTimeout(r, 250 * (attempt + 1)));
+        }
+      }
+      if (!sent) throw new Error('Frame upload failed at ' + i);
     }
     await fetch('/done', { method: 'POST' });
   } catch (err) {
@@ -217,6 +227,9 @@ const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
   });
 
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  server.requestTimeout = 0;
+  server.headersTimeout = 0;
+  server.keepAliveTimeout = 600000;
   const { port } = server.address();
 
   const profileDir = `/tmp/chrome_render_prof_${process.pid}`;
@@ -239,9 +252,9 @@ const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
   try {
     await renderFinished;
   } finally {
-    chrome.kill('SIGTERM');
-    server.close();
-    fs.rmSync(profileDir, { recursive: true, force: true });
+    try { chrome.kill('SIGTERM'); } catch (_) {}
+    try { server.close(); } catch (_) {}
+    setTimeout(() => { try { fs.rmSync(profileDir, { recursive: true, force: true }); } catch (_) {} }, 500);
   }
 
   ffmpeg.stdin.end();

@@ -1,0 +1,7 @@
+_Code/.venv_voice/
+_Code/__pycache__/
+*.pyc
+_Code/build/audio/*_raw.wav
+_Code/build/ambient_music_long.wav
+_Code/build/ref_*.wav
+.DS_Store

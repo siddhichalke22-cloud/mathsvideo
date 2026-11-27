@@ -3,9 +3,9 @@
   "subtitle": "From Systems of Equations to Row Echelon Form",
   "course": "Linear Algebra and Calculus (M3) • Internal Assessment",
   "studentName": "Student Name",
-  "studentId": "Student ID",
-  "repositoryName": "M3_AnimationVideo_GaussianElimination_StudentID",
-  "voice": "Daniel",
+  "studentId": "E25B070680",
+  "repositoryName": "M3_AnimationVideo_GaussianElimination_E25B070680",
+  "voice": "Custom Voice (Student Clone)",
   "speechRateWpm": 162,
   "musicCredit": "Original procedural ambient sine-pad track synthesized via Python/FFmpeg (CC0 / Original)"
 }
